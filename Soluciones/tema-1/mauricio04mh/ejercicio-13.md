@@ -20,7 +20,7 @@ Dificultad: ★★ · Código: [`ejercicio-13.py`](ejercicio-13.py)
 
 **Estructura.** Árbol binario de búsqueda con claves $1, \dots, n$. Acceder a una clave es hacer *splay* de su nodo: se sube a la raíz con rotaciones (zig, zig-zig, zig-zag).
 
-**Costo** (Conferencia 4, §4). El costo de un acceso es el número de rotaciones, igual a la profundidad del nodo (cada zig-zig y zig-zag cuenta $2$, cada zig $1$), y $1$ si el nodo ya es la raíz.
+**Costo** (Conferencia 4, §4). El costo de un acceso es el número de rotaciones, igual a la profundidad del nodo (cada zig-zig y zig-zag cuenta $2$, cada zig $1$), y $1$ si el nodo ya es la raíz. El código cuenta solo rotaciones, así que en ese caso suma $0$; la diferencia solo importa en el último párrafo de «¿Es ajustada la cota?».
 
 **Camino inicial** (la función `camino(n)` de la Conferencia 4, §4): la raíz es $n$ y cada nodo tiene como único hijo, a la izquierda, al anterior:
 
@@ -57,6 +57,13 @@ El camino es $4(3(2(1,.),.),.)$. Tras cada acceso se anota el costo real (rotaci
 | 4 | 1 | 1 | $4(3(2(1,.),.),.)$ | $4{,}58$ |
 
 Costo total real: $3 + 2 + 2 + 1 = 8$ rotaciones. Después del último acceso el árbol vuelve a ser el camino inicial.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-13-arboles-oscuro.svg">
+  <img src="figuras/ejercicio-13-arboles-claro.svg" alt="El árbol antes y después de cada acceso con n = 4">
+</picture>
+
+**Figura 1.** El árbol antes del primer acceso y después de cada uno, con $n = 4$. Las claves están en orden de izquierda a derecha, y el nodo recién accedido (resaltado) queda en la raíz. Las rotaciones son $3, 2, 2, 1$, y el último árbol es el camino inicial.
 
 ---
 
@@ -146,7 +153,12 @@ Total: $3 + 3 + 2 + 1 = 9$ (el splay hizo $8$).
 
 **Base ($k = 3$).** El acceso $1$ lleva la clave $1$ a la raíz por rotaciones simples: queda $1$ con hijo derecho $n$ y el camino $n \to \dots \to 2$ a su izquierda. El acceso $2$, a profundidad $n-1$, la lleva a la raíz y deja $2(1,\ n(n{-}1(\dots 3)))$, que es el enunciado con $k = 3$.
 
-**Paso inductivo.** Si vale para $k$, la profundidad de $k$ es $1 + (n-k) = n-k+1$: un paso de la raíz $k-1$ a $n$ y $n-k$ pasos hacia abajo por el camino. Al subir $k$ a la raíz con rotaciones simples quedan: raíz $k$, el camino $k-1 \to \dots \to 1$ a la izquierda, y el nodo $n$ con el camino $n \to \dots \to k+1$ a su derecha. Es el enunciado con $k+1$. $\blacksquare$
+**Paso inductivo.** Si vale para $k < n$, el nodo $k$ es el último del camino $n \to \dots \to k$, a profundidad $1 + (n-k) = n-k+1$: un paso de la raíz $k-1$ a $n$ y $n-k$ pasos hacia abajo por el camino. Las rotaciones simples lo suben así:
+
+- Mientras su padre $p$ es un nodo del camino ($k < p \le n$), $k$ es hijo izquierdo de $p$. La rotación pone a $p$ como hijo derecho de $k$, y el que era hijo derecho de $k$ pasa a ser hijo izquierdo de $p$. Cuando $k$ ocupa el lugar de $n$, su hijo derecho es $n$, y debajo de $n$ cuelga a la izquierda el camino $n \to \dots \to k+1$.
+- La última rotación es con la raíz $k-1$, de la que $k$ es ahora hijo derecho: $k-1$ pasa a ser hijo izquierdo de $k$, con su camino $k-2 \to \dots \to 1$ debajo.
+
+Quedan la raíz $k$, el camino $k-1 \to \dots \to 1$ a su izquierda y, a su derecha, el nodo $n$ con el camino $n \to \dots \to k+1$ colgando a la izquierda de $n$. Es el enunciado con $k+1$. $\blacksquare$
 
 **Teorema 2.** Con rotaciones simples, el costo total es exactamente
 
@@ -174,6 +186,20 @@ $$2(n-1) + \sum_{k=3}^{n}(n-k+1) = 2(n-1) + \frac{(n-2)(n-1)}{2} = \frac{(n-1)(n
 | 1024 | 4478 | 4,37 | 524 799 | 524 799 | 41 984 |
 
 La columna de «subir a la raíz» coincide con la fórmula exacta del Teorema 2 en todas las filas. Para $n = 8$ la secuencia de costos es $7, 7, 6, 5, 4, 3, 2, 1$ (total $35$).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-13-costos-oscuro.svg">
+  <img src="figuras/ejercicio-13-costos-claro.svg" alt="Rotaciones totales del splay, de subir a la raíz y de la cota del lema, en función de n">
+</picture>
+
+**Figura 2.** Los totales de la tabla en escala logarítmica, para $n = 4, 8, \dots, 1024$. «Subir a la raíz» crece como $n^2$, el splay como $n$ y la cota del lema como $n \log n$.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-13-splay-animado-oscuro.gif">
+  <img src="figuras/ejercicio-13-splay-animado-claro.gif" alt="Animación de splay y subir a la raíz sobre un camino de 8 nodos, acceso por acceso">
+</picture>
+
+**Figura 3.** Splay (izquierda) y subir a la raíz (derecha) sobre el camino de $8$ nodos, acceso por acceso. Después del primer acceso, el splay deja un árbol de profundidad $5$ y subir a la raíz uno de profundidad $7$. Al final el splay suma $22$ rotaciones y subir a la raíz $35$, como en la tabla.
 
 **Qué dice esto.** La diferencia es el orden de las dos rotaciones del caso zig-zig. El splay rota primero el padre y casi divide a la mitad la profundidad de los nodos del camino de acceso; subir a la raíz deja un camino casi igual de largo y la siguiente clave está otra vez en el fondo (Conferencia 4, §6). La cuenta del lema no cierra para rotaciones simples: los rangos se telescopian pero los «+1» no, y solo la concavidad del logaritmo, que aparece al agrupar dos rotaciones, los paga.
 

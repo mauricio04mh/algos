@@ -79,6 +79,13 @@ Las llamadas recursivas intercambian los papeles de las varillas, y por eso la f
 
 **Fuerza bruta como oráculo** (Conferencia 2, §4). El algoritmo que siempre está disponible es explorar todos los estados. Hay $3^n$ estados (cada disco en una de tres varillas) y cada movimiento legal es una arista entre estados. Una búsqueda en anchura desde el estado inicial encuentra el camino más corto hasta el final. No necesita demostración de correctitud, pero cuesta $\Theta(3^n)$, y en «Verificación con código» sirve para contrastar la teoría.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-14-estados-oscuro.svg">
+  <img src="figuras/ejercicio-14-estados-claro.svg" alt="El grafo de los 27 estados con tres discos y el camino del algoritmo">
+</picture>
+
+**Figura 1.** El grafo de los $3^3 = 27$ estados con $n = 3$: cada nodo es un estado y cada arista, un movimiento legal. En las esquinas están los estados con todos los discos en una varilla. El camino resaltado es el del algoritmo: $7$ movimientos por el lado del triángulo que va de la varilla $1$ a la $3$.
+
 ---
 
 ## Pregunta 3: correctitud
@@ -245,6 +252,39 @@ el algoritmo es óptimo. Además, el código de «Verificación con código» cu
 
 Ya con $n = 3$ bastan $5$ movimientos, menos que $7$. La cota $2^n - 1$ vale para el modelo de tres varillas, no para el problema «mover discos» en general.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-14-varillas-oscuro.svg">
+  <img src="figuras/ejercicio-14-varillas-claro.svg" alt="Mínimo de movimientos con tres y con cuatro varillas, de n = 1 a 7">
+</picture>
+
+**Figura 2.** Los valores de la tabla: con cuatro varillas el mínimo crece mucho más despacio que $2^n - 1$.
+
+### Extensión: el algoritmo de Frame–Stewart
+
+¿Qué algoritmo alcanza los mínimos de la tabla con cuatro varillas? El de Frame–Stewart generaliza la idea recursiva: en lugar de apartar $n - 1$ discos, aparta solo los $k$ menores, y los $n - k$ grandes se mueven con tres varillas.
+
+1. Llevar los $k$ discos menores de `origen` a una varilla auxiliar, con las cuatro varillas.
+2. Llevar los $n - k$ discos restantes de `origen` a `destino` con el algoritmo de tres varillas. La varilla de los $k$ menores no se puede usar, porque todos sus discos son menores; quedan `origen`, `destino` y la otra auxiliar.
+3. Llevar los $k$ menores de la auxiliar a `destino`, encima, otra vez con las cuatro varillas.
+
+Si $FS(n)$ es el número de movimientos con el mejor $k$,
+
+$$FS(0) = 0, \qquad FS(1) = 1, \qquad FS(n) = \min_{1 \le k < n}\bigl(2\,FS(k) + 2^{n-k} - 1\bigr).$$
+
+**Es una cota superior.** Los tres pasos son secuencias legales: en los pasos 1 y 3 los discos mayores que $k$ no estorban, por la misma razón que en la «Pregunta 5» (las reglas solo comparan un disco con los menores), y en el paso 2 los $k$ menores están quietos en una varilla que no se usa. Así que con cuatro varillas el mínimo es a lo sumo $FS(n)$.
+
+**Comparación con el mínimo exacto** (salida de [`ejercicio-14.py`](ejercicio-14.py), que además simula los movimientos y comprueba las reglas):
+
+| $n$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|
+| Frame–Stewart | 1 | 3 | 5 | 9 | 13 | 17 | 25 | 33 | 41 |
+| mínimo (BFS) | 1 | 3 | 5 | 9 | 13 | 17 | 25 | 33 | 41 |
+| $k$ elegido | – | 1 | 1 | 1 | 2 | 3 | 3 | 4 | 5 |
+
+El $k$ elegido es el menor que alcanza el mínimo de la recurrencia. Para $n \le 9$ el algoritmo hace exactamente el mínimo que da la búsqueda en anchura. Que coincida para todo $n$ no se demuestra aquí.
+
+**Los incrementos.** El código comprueba hasta $n = 60$ que $FS(n) - FS(n-1) = 2^t$ cuando $t(t+1)/2 < n \le (t+1)(t+2)/2$: el incremento $2^t$ se repite $t + 1$ veces ($1$; $2, 2$; $4, 4, 4$; $8, \dots$). Por eso $FS(n)$ crece mucho más despacio que $2^n - 1$: con $n = 20$ son $289$ movimientos contra $1\,048\,575$.
+
 ---
 
 ## Verificación con código
@@ -257,7 +297,8 @@ El archivo [`ejercicio-14.py`](ejercicio-14.py) comprueba, con `assert` y sin az
 4. que la salida es un camino legal del estado inicial al final;
 5. el oráculo: la búsqueda en anchura sobre los $3^n$ estados da el mínimo, y cuenta los caminos mínimos;
 6. el Lema 2, en todos los estados legales;
-7. el mínimo con cuatro varillas.
+7. el mínimo con cuatro varillas;
+8. el algoritmo de Frame–Stewart: que sus movimientos son legales y que su número coincide con la recurrencia y con la búsqueda en anchura para $n \le 9$.
 
 Resultados:
 
@@ -298,6 +339,8 @@ Lema del disco grande: comprobado en los $3^n$ estados para $n \le 8$. Con $n = 
 
 Mínimo con $4$ varillas por BFS, para $n = 1, \dots, 7$: $1, 3, 5, 9, 13, 17, 25$ (con $3$ varillas: $1, 3, 7, 15, 31, 63, 127$).
 
+Frame–Stewart, para $n = 1, \dots, 9$: $1, 3, 5, 9, 13, 17, 25, 33, 41$ movimientos, igual que la búsqueda en anchura. Los incrementos siguen la regla de $2^t$ repetido $t + 1$ veces hasta $n = 60$, y $FS(20) = 289$.
+
 El mínimo exacto calculado por fuerza bruta coincide con $2^n - 1$ en cada fila, que es lo que predicen a la vez el algoritmo (Teorema 2) y la cota (Teorema 3). La fuerza bruta explora $3^n$ estados, mientras que el algoritmo recursivo no explora ninguno: construye la solución directamente.
 
 ## Resumen de resultados
@@ -308,6 +351,7 @@ El mínimo exacto calculado por fuerza bruta coincide con $2^n - 1$ en cada fila
 4. **Costo:** $T(n) = 2T(n-1) + 1 = 2^n - 1$, siempre.
 5. **Cota mínima:** el disco $n$ solo se mueve con los otros $n-1$ en la tercera varilla; $M(n) \ge 2M(n-1)+1$, luego $M(n) \ge 2^n - 1$.
 6. **Optimalidad:** $T(n) = M(n) = 2^n - 1$. La cota depende del modelo de tres varillas.
+7. **Extensión:** con cuatro varillas, el algoritmo de Frame–Stewart hace $FS(n) = \min_k \bigl(2FS(k) + 2^{n-k} - 1\bigr)$ movimientos, el mínimo exacto para $n \le 9$.
 
 ## Referencias
 

@@ -104,7 +104,9 @@ $$x_{k+1} = x_{2k+2}.$$
 
 $$(2k+2) - (k+1) = k + 1 \ge 1.$$
 
-**Paso 4.** Dos índices distintos con el mismo nodo contradicen el Hecho 1, que vale en el caso A. Por tanto no estamos en el caso A: hay un ciclo. $\blacksquare$
+**Paso 4.** Se supone que estamos en el caso A, donde $x_i$ es un nodo real si y solo si $i < n$. La vuelta se ejecutó, así que `fast.next` $= x_{2k+1}$ era real: $2k+1 < n$. Entonces $k+1 < n$ y `slow` $= x_{k+1}$ es un nodo real. Como `slow is fast`, también $x_{2k+2}$ es real, es decir, $2k+2 < n$.
+
+**Paso 5.** Así $k+1$ y $2k+2$ son dos índices distintos (Paso 3), ambos menores que $n$, con el mismo nodo. Eso contradice el Hecho 1. Por tanto no estamos en el caso A: hay un ciclo. $\blacksquare$
 
 ---
 
@@ -186,12 +188,19 @@ porque $\Phi_k - 1 \ge 0$ y no hay «vuelta» del módulo.
 
 **Paso 8. Terminación.** $\Phi$ es un entero no negativo que baja $1$ por vuelta mientras es positivo, así que llega a $0$ en a lo sumo $\lambda - 1$ vueltas desde $k_0$.
 
-**Paso 9. Valor exacto.** La primera vuelta $k \ge 1$ con coincidencia es la menor $k \ge \mu$ con $\lambda \mid k$, que es $k^\ast$.
+**Paso 9. Valor exacto.** La primera vuelta $k \ge 1$ con coincidencia es la menor $k \ge \max(\mu, 1)$ con $\lambda \mid k$, que es $k^\ast$.
 
 **Paso 10. Cota $k^\ast \le n$.**
 
 - Si $\mu \ge 1$: $k^\ast < \mu + \lambda = n$.
 - Si $\mu = 0$: $k^\ast = \lambda = n$. $\blacksquare$
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-05-floyd-oscuro.gif">
+  <img src="figuras/ejercicio-05-floyd-claro.gif" alt="Animación de slow y fast sobre una lista con cola de 3 nodos y ciclo de 5">
+</picture>
+
+**Figura 1.** Los dos punteros sobre una lista con cola $\mu = 3$ y ciclo $\lambda = 5$, vuelta por vuelta. Mientras `slow` está en la cola no se usa el potencial. Desde $k = 3$, $\Phi_k = (-k) \bmod 5$ vale $2, 1, 0$, y los punteros coinciden en $k^\ast = 5\lceil 3/5 \rceil = 5$, en el nodo $x_5$.
 
 ---
 
@@ -228,6 +237,13 @@ Tres listas pequeñas que cubren los tres casos de la demostración: un ciclo pu
 | 2 | 3 | 5 | no |
 | 3 | 4 | 4 | **sí** |
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-05-rho-oscuro.svg">
+  <img src="figuras/ejercicio-05-rho-claro.svg" alt="Los punteros slow y fast sobre la lista con cola de 2 nodos y ciclo de 3, en las vueltas 0 a 3">
+</picture>
+
+**Figura 2.** La lista $1 \to 2 \to 3 \to 4 \to 5 \to 3$ ($\mu = 2$, $\lambda = 3$) en las vueltas $k = 0, \dots, 3$. `slow` está en $x_k$ y `fast` en $x_{2k}$, como dice $I(k)$. En $k = 3 = k^\ast$ coinciden en el nodo $4$.
+
 **Sin ciclo** $1 \to 2 \to 3 \to 4 \to \text{None}$: $n = 4$, hay $\lfloor 4/2 \rfloor = 2$ vueltas.
 
 | vuelta $k$ | slow | fast |
@@ -255,6 +271,8 @@ El archivo [`ejercicio-05.py`](ejercicio-05.py) construye listas con cola $\mu$ 
 En 5000 listas aleatorias la respuesta, el invariante y el número de vueltas $k^\ast$ coinciden con las fórmulas, y el máximo de $\text{vueltas}/n$ es $1{,}00$.
 
 El máximo de $\text{vueltas}/n$ se alcanza cuando $\mu = 0$ y $\lambda = n$.
+
+Además, el programa recorre **todas** las listas de hasta $60$ nodos. Salvo los nombres de los nodos, una lista de $n$ nodos queda determinada por a dónde apunta el último: a `None` o a uno de los $n$ nodos. Hay entonces $n + 1$ formas, una por cada par $(\mu, \lambda)$ con $\mu + \lambda = n$, y $1891$ en total para $n \le 60$. En todas, la respuesta, el invariante y el número de vueltas coinciden con las Proposiciones 2 y 3. Es una comprobación exhaustiva para esos tamaños, no una demostración para todo $n$.
 
 ## Resumen de resultados
 

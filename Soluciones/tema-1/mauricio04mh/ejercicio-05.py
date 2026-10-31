@@ -69,3 +69,19 @@ if __name__ == "__main__":
         casos += 1
     print(f"\n{casos} listas aleatorias: respuesta correcta, invariante y número de "
           f"vueltas k* iguales a la fórmula; máx. vueltas/n = {peor_razon:.2f}")
+
+    # Todas las listas de hasta N nodos. Una lista de n nodos queda determinada por
+    # a dónde apunta el último: a None o a uno de los n nodos, así que hay n + 1
+    # formas, una por cada (mu, lam) con mu + lam = n.
+    N = 60
+    formas = 0
+    for n in range(0, N + 1):
+        for lam in range(0, n + 1):
+            mu = n - lam
+            head, nodos = construir(mu, lam)
+            r, v = floyd(head, {"nodos": nodos, "mu": mu, "lam": lam})
+            prev = lam * math.ceil(max(mu, 1) / lam) if lam else n // 2
+            assert r == (lam > 0) and v == prev and v <= max(n, 1)
+            formas += 1
+    print(f"todas las listas de hasta {N} nodos ({formas} formas): respuesta, "
+          f"invariante y vueltas iguales a las fórmulas")

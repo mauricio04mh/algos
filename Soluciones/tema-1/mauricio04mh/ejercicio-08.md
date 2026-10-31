@@ -158,7 +158,7 @@ En los cinco casos el invariante se mantiene. $\blacksquare$
 
 **Paso 1.** Al terminar, $i = n$, luego $n = 3t + k_1 + k_2$. Se supone que $x$ no es $c_1$ con $k_1 > 0$ ni $c_2$ con $k_2 > 0$.
 
-**Paso 2.** Las copias sueltas son todas de $c_1$ o todas de $c_2$; entonces ninguna copia de $x$ está suelta: todas están dentro de tríos.
+**Paso 2.** Cada copia suelta es una copia de $c_1$ o de $c_2$, y por el supuesto del Paso 1 ninguna es de $x$: si $x = c_1$, entonces $k_1 = 0$, y lo mismo con $c_2$. Entonces ninguna copia de $x$ está suelta: todas están dentro de tríos.
 
 **Paso 3.** Cada trío tiene tres elementos distintos, así que contiene a lo sumo una copia de $x$. Los $t$ tríos contienen a lo sumo $t$ copias: $m \le t$.
 
@@ -255,6 +255,13 @@ Los demás generadores son `plantada_una` (un elemento con más de $n/3$ copias)
 | todos distintos | 53,3 % | 0,0 % |
 
 La versión con segunda pasada no falla nunca. La sin verificar falla en un tercio o la mitad de las listas, **salvo con «plantada de dos»**, que no la atrapa.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-08-generadores-oscuro.svg">
+  <img src="figuras/ejercicio-08-generadores-claro.svg" alt="Porcentaje de listas en que la versión sin verificar se equivoca, por generador">
+</picture>
+
+**Figura 1.** Los porcentajes de la tabla para la versión sin verificar. «Plantada de dos» es el único generador con $0{,}0\,\%$.
 
 **El análogo binario sí la atrapa.** En la Conferencia 3 el generador binario no atrapaba el atajo de la mayoría, porque con dos símbolos el contador final es la diferencia entre las dos cuentas (ejercicio 3 de esa conferencia). Aquí sí lo atrapa:
 

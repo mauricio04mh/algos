@@ -85,6 +85,13 @@ Son $3$ comparaciones.
 
 Son $4$ comparaciones.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-07-corte-oscuro.svg">
+  <img src="figuras/ejercicio-07-corte-claro.svg" alt="Los elementos que descarta cada vuelta de la mediana con n = 8">
+</picture>
+
+**Figura 1.** La traza con $n = 8$. En cada vuelta se recuadran los dos elementos comparados, y los descartados quedan en gris: se descartan los $h$ primeros vivos del arreglo con el valor menor. Al final la mediana es $\min(9, 8) = 8$ (sombreada).
+
 ---
 
 ## Correctitud con un invariante

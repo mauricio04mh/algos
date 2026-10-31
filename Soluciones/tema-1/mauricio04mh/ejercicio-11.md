@@ -81,7 +81,7 @@ Por ejemplo, $\text{dp}[2][5] = \max(3,\ 4 + \text{dp}[1][2]) = \max(3,\ 4 + 3) 
 - **$i \notin S$.** Entonces $S$ es un subconjunto de $\{1,\dots,i-1\}$ con peso $\le w$; su valor máximo es $\text{dp}[i-1][w]$ por hipótesis.
 - **$i \in S$ (solo posible si $p_i \le w$).** Entonces $S \setminus \{i\}$ es un subconjunto de $\{1,\dots,i-1\}$ con peso $\le w - p_i$, y el mejor valor es $v_i + \text{dp}[i-1][w-p_i]$ por hipótesis.
 
-El máximo de los dos casos (o solo el primero si $p_i > w$) es exactamente lo que calcula la recurrencia. $\blacksquare$
+Así el valor óptimo es a lo sumo el máximo de los dos casos (o solo el primero si $p_i > w$), que es lo que calcula la recurrencia. Al revés, los dos valores se alcanzan: $\text{dp}[i-1][w]$ con un subconjunto de $\{1,\dots,i-1\}$ de peso $\le w$, y, si $p_i \le w$, $v_i + \text{dp}[i-1][w-p_i]$ agregando $i$ a un subconjunto de peso $\le w - p_i$, con lo que el peso queda $\le w$. Entonces la recurrencia da exactamente el valor óptimo. $\blacksquare$
 
 **Teorema 1 (costo).** El algoritmo cuesta $\Theta(nW)$ en **toda** entrada.
 
@@ -147,7 +147,7 @@ Con el costo en función de $W$ y el tamaño en función de $\log_2 W$, ya se pu
 | 50 | $5{,}6\cdot10^{14}$ | $2{,}25\cdot10^{15}$ |
 | 64 | $9{,}2\cdot10^{18}$ | $3{,}69\cdot10^{19}$ |
 
-Con $W$ de $50$ bits la entrada ocupa menos de $200$ bits y la tabla tiene unas $10^{15}$ casillas: a $10^9$ casillas por segundo, son más de $10$ días solo para llenarla.
+Con los tres objetos del Paso 1 y $W$ de $50$ bits, la entrada ocupa menos de $200$ bits y la tabla tiene unas $10^{15}$ casillas: a $10^9$ casillas por segundo, son más de $10$ días solo para llenarla.
 
 **Cuándo sí es rápido.** Si $W \le n^2$, entonces $nW \le n^3$ y el algoritmo es polinomial. El problema aparece solo cuando $W$ puede ser exponencialmente grande respecto a su cantidad de bits.
 
@@ -157,7 +157,7 @@ $$nW \le s \cdot s = s^2,$$
 
 que es polinomial en $s$. El algoritmo es el mismo; lo que cambia es cómo se mide la entrada. Con $W = 1000$ el binario ocupa $10$ símbolos y el unario $1000$; con $W = 2^{40}$ el unario ocuparía unos $10^{12}$ símbolos, del orden de un terabyte. Por eso la Conferencia 1 mide la entrada en binario: es la medida que no se infla artificialmente.
 
-**Observación.** Esto no contradice nada conocido: la mochila es NP-completa (Tema 3). Existe un algoritmo pseudopolinomial, pero no se conoce uno polinomial en el tamaño en bits.
+**Observación.** Esto no contradice nada conocido: la versión de decisión de la mochila («¿hay un subconjunto de peso $\le W$ y valor $\ge V$?») es NP-completa (Tema 3). Existe un algoritmo pseudopolinomial, pero no se conoce uno polinomial en el tamaño en bits.
 
 ---
 
@@ -193,6 +193,13 @@ La última pregunta del enunciado es en qué se parece la mochila a un algoritmo
 | clasificación | pseudopolinomial | pseudopolinomial |
 
 **El parecido.** En ambos casos el algoritmo hace un trabajo por cada unidad del valor de un número de la entrada, y ese valor es exponencial en su número de bits: parece un ciclo sencillo y es exponencial en el tamaño real.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-11-bits-oscuro.svg">
+  <img src="figuras/ejercicio-11-bits-claro.svg" alt="Operaciones de la mochila y de la primalidad por división en función de los bits">
+</picture>
+
+**Figura 1.** El costo de los dos algoritmos en función de los bits $b$ del número, en escala logarítmica: las casillas de la tabla de la mochila con $n = 3$ y $W = 2^{b-1}$, y las divisiones de la primalidad, $\sqrt N = 2^{b/2}$. Las dos son rectas, es decir, exponenciales en $b$. Un polinomio como $b^3$ se aplana.
 
 **La diferencia.** La primalidad **sí** tiene algoritmos polinomiales en bits: Miller–Rabin (aleatorizado) y, desde 2002, el de Agrawal, Kayal y Saxena (determinista). Para la mochila no se conoce ninguno.
 

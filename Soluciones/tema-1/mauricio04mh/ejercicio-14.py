@@ -115,6 +115,53 @@ def estados_de(movimientos, n):
         yield tuple(estado)
 
 
+# ------------------------------------------- extension: Frame-Stewart (4 varillas)
+def frame_stewart(n):
+    """Movimientos del algoritmo de Frame-Stewart con 4 varillas:
+    FS(n) = min_k 2 FS(k) + (2^(n-k) - 1), con FS(0) = 0 y FS(1) = 1."""
+    fs = [0, 1]
+    for m in range(2, n + 1):
+        fs.append(min(2 * fs[k] + 2 ** (m - k) - 1 for k in range(1, m)))
+    return fs[n]
+
+
+def mejor_k(n):
+    return min(range(1, n), key=lambda k: 2 * frame_stewart(k) + 2 ** (n - k) - 1)
+
+
+def hanoi_discos(discos, o, d, a, movimientos):
+    """El algoritmo de 3 varillas sobre una lista de discos (de menor a mayor)."""
+    if not discos:
+        return
+    hanoi_discos(discos[:-1], o, a, d, movimientos)
+    movimientos.append((discos[-1], o, d))
+    hanoi_discos(discos[:-1], a, d, o, movimientos)
+
+
+def fs_mover(discos, o, d, a, b, movimientos):
+    """Frame-Stewart: los k menores a una auxiliar con 4 varillas, el resto al
+    destino con 3 (la varilla de los k menores no se puede usar), y los k encima."""
+    n = len(discos)
+    if n == 0:
+        return
+    if n == 1:
+        movimientos.append((discos[0], o, d))
+        return
+    k = mejor_k(n)
+    fs_mover(discos[:k], o, a, d, b, movimientos)
+    hanoi_discos(discos[k:], o, d, b, movimientos)
+    fs_mover(discos[:k], a, d, o, b, movimientos)
+
+
+def simular(movimientos, n, p):
+    """Aplica los movimientos con p varillas, comprobando las reglas; devuelve las pilas."""
+    pilas = {v: [] for v in range(1, p + 1)}
+    pilas[1] = list(range(n, 0, -1))
+    for disco, o, d in movimientos:
+        mover(pilas, disco, o, d)
+    return pilas
+
+
 # -------------------------------------------------------------------- pruebas
 if __name__ == "__main__":
     # 1. Traza de n = 3
@@ -180,3 +227,22 @@ if __name__ == "__main__":
     print("con 4 varillas, minimo por BFS:",
           [bfs(n, 4)[0] for n in range(1, 8)],
           " (con 3 varillas:", [2 ** n - 1 for n in range(1, 8)], ")")
+    print()
+
+    # 8. Extension: el algoritmo de Frame-Stewart con 4 varillas
+    print(f"{'n':>3} {'Frame-Stewart':>14} {'minimo (BFS)':>13} {'k elegido':>10}")
+    for n in range(1, 10):
+        movimientos = []
+        fs_mover(list(range(1, n + 1)), 1, 4, 2, 3, movimientos)
+        assert simular(movimientos, n, 4)[4] == list(range(n, 0, -1))
+        assert len(movimientos) == frame_stewart(n) == bfs(n, 4)[0]
+        print(f"{n:>3} {len(movimientos):>14} {bfs(n, 4)[0]:>13} "
+              f"{mejor_k(n) if n > 1 else '-':>10}")
+    # los incrementos: FS(n) - FS(n-1) = 2^t, con t(t+1)/2 < n <= (t+1)(t+2)/2
+    for n in range(1, 61):
+        t = 0
+        while (t + 1) * (t + 2) // 2 < n:
+            t += 1
+        assert frame_stewart(n) - frame_stewart(n - 1) == 2 ** t
+    print("FS(n) - FS(n-1) = 2^t para t(t+1)/2 < n <= (t+1)(t+2)/2, n <= 60;",
+          "FS(20) =", frame_stewart(20), "contra 2^20 - 1 =", 2 ** 20 - 1)

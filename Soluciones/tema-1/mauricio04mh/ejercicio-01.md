@@ -146,6 +146,13 @@ Despejando $k$ se obtiene la cota inferior.
 | $10^9$ | 757,6 | 750,0 |
 | $10^{12}$ | 805,1 | 800,0 |
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-01-factor-oscuro.svg">
+  <img src="figuras/ejercicio-01-factor-claro.svg" alt="El factor k en función de n0 para n log n y para n al cuadrado">
+</picture>
+
+**Figura 1.** El factor $k$ para $n_0$ entre $10$ y $10^{15}$, con el eje vertical en escala logarítmica. Para $c\,n\log_2 n$ crece despacio hacia $1000$ sin alcanzarlo, y los puntos marcados son los de la tabla. Para $c\,n^2$ es la constante $\sqrt{1000} \approx 31{,}6$.
+
 **Comprobación con $n_0 = 10^6$.** Con $k = 679{,}3$: $\log_2 k = 9{,}41$ y $\log_2 n_0 = 19{,}93$, así que $679{,}3\cdot(1 + 9{,}41/19{,}93) \approx 679{,}3 \cdot 1{,}472 \approx 1000$.
 
 ---

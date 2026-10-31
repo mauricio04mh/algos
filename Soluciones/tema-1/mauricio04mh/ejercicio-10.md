@@ -64,7 +64,7 @@ $$d \ge \log_3 n! \ge \frac{n}{2}\log_3\frac{n}{2} = \Omega(n \log n). \qquad\bl
 
 **Ejemplo numérico** ($n = 4$). Hay $4! = 24$ órdenes y $3^2 = 9 < 24 \le 27 = 3^3$, así que hacen falta al menos $3$ preguntas.
 
-**Nota.** Con polinomios de grado fijo cualquiera, una hoja puede tener varias componentes conexas; el teorema de Milnor y Thom (que aquí se cita) acota cuántas, y el cambio en la cuenta es de orden lineal en $n$. La cota sigue siendo $\Omega(n \log n)$.
+**Nota.** Con polinomios de grado fijo cualquiera, una hoja puede tener varias componentes conexas y el argumento de convexidad ya no sirve. El teorema de Milnor y Thom (que aquí se cita) acota cuántas componentes puede tener una hoja, y con esa cota Ben-Or obtiene de nuevo $\Omega(n \log n)$.
 
 ---
 
@@ -172,6 +172,13 @@ def par_mas_cercano_1d(xs):
 | 2 | $9{,}1$ | $4{,}5$ | celda $2$; revisa $1,2,3$; encuentra el $7$ a distancia $2{,}1$; reconstruye | $2{,}1$ |
 | 3 | $2{,}6$ | $2{,}1$ | celda $1$; revisa $0,1,2$; encuentra el $2{,}5$ a distancia $0{,}1$; reconstruye | $0{,}1$ |
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-10-rejilla-oscuro.svg">
+  <img src="figuras/ejercicio-10-rejilla-claro.svg" alt="Las celdas de ancho delta y las tres que se revisan, en los pasos 2 y 3 del ejemplo">
+</picture>
+
+**Figura 1.** Los pasos 2 y 3 del ejemplo. Las celdas tienen ancho $\delta$, y las tres que se revisan alrededor del punto nuevo están sombreadas. En el paso 2 el $9{,}1$ cae en la celda $2$ y encuentra el $7$ en la celda $1$. En el paso 3, ya reconstruida la tabla con $\delta = 2{,}1$, el $2{,}6$ cae en la celda $1$, la misma del $2{,}5$.
+
 ### Corrección
 
 El ejemplo muestra que el algoritmo mejora $\delta$ cuando encuentra un punto cercano en las tres celdas. Falta probar que nunca se le pasa un punto más cercano, y para eso se usa un invariante.
@@ -256,7 +263,7 @@ Trabajo por punto en la tabla y reconstrucciones, con el orden aleatorio y con e
 | 1000 | 7,7 | 15 | 13,8 | 503,5 | 998 | 5,0 | 10 |
 | 3000 | 5,5 | 12 | 16,0 | 1503,5 | 2998 | 6,1 | 11 |
 
-Con orden aleatorio, el trabajo por punto se queda en unas $5$–$8$ operaciones y las reconstrucciones (unas $9$–$15$) quedan por debajo de $2\ln n$. Con el orden adversario hay una reconstrucción por punto ($198$, $998$, $2998$) y el trabajo por punto crece como $n/2$. Los mismos puntos adversarios, **barajados**, vuelven a costar $\approx 5$–$6$ por punto.
+Con orden aleatorio, el trabajo por punto se queda en unas $5$–$8$ operaciones y las reconstrucciones (unas $9$–$15$) son del orden de $2\ln n$. El Teorema 3 acota su **esperanza**, y cada fila es el promedio de solo $5$ corridas, así que una fila puede pasar la cota, como la de $n = 1000$. Con el orden adversario hay una reconstrucción por punto ($198$, $998$, $2998$) y el trabajo por punto crece como $n/2$. Los mismos puntos adversarios, **barajados**, vuelven a costar $\approx 5$–$6$ por punto.
 
 ## Resumen de resultados
 

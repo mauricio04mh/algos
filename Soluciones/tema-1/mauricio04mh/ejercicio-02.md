@@ -32,7 +32,7 @@ while lo < hi:
 return "no está"
 ```
 
-Cada comparación de $x$ con $A[m]$ tiene tres respuestas: $x < A[m]$, $x = A[m]$ o $x > A[m]$.
+Cada comparación de $x$ con $A[m]$ tiene tres respuestas: $x < A[m]$, $x = A[m]$ o $x > A[m]$. En el código se escribe con dos operadores (`==` y después `<`), pero en el modelo de la Conferencia 5 cuenta como una sola comparación de tres respuestas. Si se contara cada operador por separado, el número de comparaciones a lo sumo se duplicaría.
 
 **Ejemplo.** Con $A = [1, 3, 5, 7, 9, 11, 13]$ y $x = 11$:
 
@@ -106,9 +106,16 @@ En ambos casos $\Phi_{\text{nuevo}} \le \lfloor k/2 \rfloor < k$. $\blacksquare$
 
 **Paso 3.** Cada vuelta hace una sola comparación (de tres respuestas). Por tanto el número de comparaciones es a lo sumo $\lceil \log_2 (n+1) \rceil$. $\blacksquare$
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-02-rango-oscuro.svg">
+  <img src="figuras/ejercicio-02-rango-claro.svg" alt="El rango de la búsqueda binaria vuelta por vuelta, con x = 11 y con x = 8">
+</picture>
+
+**Figura 1.** El rango $A[lo:hi]$ (sombreado) y la posición $m$ que se compara (recuadrada) en cada vuelta, con $A = [1,3,5,7,9,11,13]$. Con $x = 11$ lo encuentra en la vuelta $2$. Con $x = 8$ el potencial $hi - lo$ pasa por $7, 3, 1, 0$: son $3 = \lceil \log_2 8 \rceil$ comparaciones, como dice el Teorema 1.
+
 Junto con el invariante de la sección anterior, el algoritmo es **totalmente correcto**.
 
-**Por qué `lo = m + 1` y no `lo = m`.** Con `lo = m` el potencial no baja siempre. Con $A = [5]$ y $x = 7$: `lo = 0`, `hi = 1`, `m = 0`, $7 > A[0]$ y `lo = m` deja `lo = 0`. El potencial sigue en $1$ y el ciclo no termina (Conferencia 3, §1, ejercicio 7).
+**Por qué `lo = m + 1` y no `lo = m`.** Con `lo = m` el potencial no baja siempre. Con $A = [5]$ y $x = 7$: `lo = 0`, `hi = 1`, `m = 0`, $7 > A[0]$ y `lo = m` deja `lo = 0`. El potencial sigue en $1$ y el ciclo no termina (Conferencia 3, ejercicio 7).
 
 ---
 
@@ -142,6 +149,13 @@ Con $n = 7$ hay 8 huecos.
 
 **Paso 6.** Pero $A[k]$ sí está en $A$. El algoritmo se equivoca, lo que contradice su correctitud. $\blacksquare$
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-02-contradiccion-oscuro.gif">
+  <img src="figuras/ejercicio-02-contradiccion-claro.gif" alt="Animación: un algoritmo que nunca compara con 11 lleva 10, 12 y 11 a la misma hoja">
+</picture>
+
+**Figura 2.** El Lema 2 con un algoritmo concreto que nunca compara con $A[5] = 11$ (`busqueda_sin` en [`ejercicio-02.py`](ejercicio-02.py)). Su árbol tiene una sola hoja para los huecos $h_5$ y $h_6$. A ella llegan $x_1 = 10$ y $x_2 = 12$, y también $x = 11$, que recibe las mismas respuestas: el algoritmo dice «no está» y se equivoca, como en los Pasos 5 y 6.
+
 **Demostración del Teorema 2.**
 
 **Paso 1.** Por el Lema 2, los $n+1$ huecos necesitan $n+1$ hojas distintas.
@@ -151,6 +165,13 @@ Con $n = 7$ hay 8 huecos.
 **Paso 3.** Por el Lema 1 de la Conferencia 5, un árbol binario de altura $h$ tiene a lo sumo $2^h$ hojas. Entonces $2^h \ge n+1$.
 
 **Paso 4.** Tomando $\log_2$ y usando que la altura es entera: $h \ge \lceil \log_2(n+1) \rceil$. $\blacksquare$
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-02-hojas-oscuro.gif">
+  <img src="figuras/ejercicio-02-hojas-claro.gif" alt="Animación: en el árbol de decisión de la búsqueda binaria con n = 7, cada hueco llega a su propia hoja">
+</picture>
+
+**Figura 3.** El árbol de decisión de la búsqueda binaria con $A = [1,3,5,7,9,11,13]$, construido corriendo el algoritmo. Cada nodo compara $x$ con el valor que muestra, y la rama «$=$» lleva a la hoja «está». Un $x$ de cada hueco recorre su camino: los $8$ huecos llegan a $8$ hojas distintas, todas a profundidad $3 = \lceil \log_2 8 \rceil$.
 
 **Nota (por qué no basta la cota con tres ramas).** Con tres respuestas por nodo el Lema 1 solo daría $3^h$ hojas y, por tanto, una cota $\log_3$. Por eso el argumento se restringe a las entradas con $x \notin A$, donde solo hay dos ramas (Conferencia 5, §3).
 

@@ -91,7 +91,7 @@ def gale_shapley_incompleto(listas_a, pref_b):
 
 La línea nueva es `if siguiente[a] == len(listas_a[a]): continue`. Con listas completas esa situación era imposible; ahora es normal.
 
-**Ejemplo con tres proponentes.** $a_1: [b_1]$, $a_2: [b_1, b_2]$, $a_3: [b_1]$, y $b_1$ prefiere $a_3 > a_2 > a_1$. Se elige siempre al libre situado más a la izquierda de la lista (empieza en $a_1, a_2, a_3$):
+**Ejemplo con tres proponentes.** $a_1: [b_1]$, $a_2: [b_1, b_2]$, $a_3: [b_1]$, y $b_1$ prefiere $a_3 > a_2 > a_1$. Para la traza se elige siempre al libre situado más a la izquierda de la lista, que es `orden="cola"` en [`ejercicio-12.py`](ejercicio-12.py); el código de arriba toma el último (empieza en $a_1, a_2, a_3$):
 
 | iteración | quién actúa | qué pasa | libres después |
 |---|---|---|---|
@@ -102,6 +102,13 @@ La línea nueva es `if siguiente[a] == len(listas_a[a]): continue`. Con listas c
 | 5 | $a_2$ | propone a $b_2$, libre, acepta | (ninguno) |
 
 Resultado: $a_3$–$b_1$, $a_2$–$b_2$ y $a_1$ solo.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-12-emparejamiento-oscuro.svg">
+  <img src="figuras/ejercicio-12-emparejamiento-claro.svg" alt="Pares aceptables y parejas del resultado en el ejemplo con tres proponentes">
+</picture>
+
+**Figura 1.** El resultado del ejemplo. Las líneas son los pares aceptables (los de las listas $L_a$) y las gruesas son las parejas: $a_3$–$b_1$ y $a_2$–$b_2$. $a_1$ agotó su lista y queda solo, y $b_3$ no está en ninguna lista.
 
 ---
 
@@ -147,6 +154,8 @@ Como $\Phi$ es un entero $\ge 0$ y baja al menos $1$ en cada iteración, el algo
 | 1 | 3 | 2 | 5 |
 | 2 | 2 | 2 | 4 |
 | 3 | 1 | 2 | 3 |
+| 4 | 1 | 1 | 2 |
+| 5 | 0 | 0 | 0 |
 
 El algoritmo hizo $5$ iteraciones y $5 \le 7$.
 
@@ -187,7 +196,7 @@ Con la definición lista, se puede probar la tercera pregunta. La idea es supone
 
 **Lema 1.** El resultado es un emparejamiento válido.
 
-**Demostración.** Cada receptor guarda una sola pareja (`pareja_de_b[b]`); un proponente solo propone a receptores de su lista, así que toda pareja es válida; y un proponente está en `libres` o es la pareja de exactamente un receptor, luego no hay dos receptores con el mismo proponente. $\blacksquare$
+**Demostración.** Cada receptor guarda una sola pareja (`pareja_de_b[b]`), y un proponente solo propone a receptores de su lista, así que toda pareja es válida. Además, en todo momento cada proponente está en `libres`, o es la pareja de un único receptor, o agotó su lista y no es pareja de nadie: solo propone mientras está en `libres`, sale de `libres` al ser aceptado, y vuelve a `libres` cuando un receptor lo cambia por otro. Por tanto no hay dos receptores con el mismo proponente. $\blacksquare$
 
 **Teorema 2.** El emparejamiento $M$ que devuelve el algoritmo es estable, para cualquier orden de ejecución.
 

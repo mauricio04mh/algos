@@ -39,6 +39,16 @@ def variante_lo_igual_m(A, x, tope=1000):
     return -1
 
 
+def busqueda_sin(A, k, x):
+    """Un algoritmo que nunca mira A[k]: la búsqueda binaria sobre A sin esa
+    posición (para el Lema 2). Devuelve (resultado con índices de A, comparaciones)."""
+    B = A[:k] + A[k + 1:]
+    (r, m), comps = busqueda_binaria(B, x, vigilar=False)
+    if m is not None and m >= k:
+        m += 1
+    return (r, m), comps
+
+
 if __name__ == "__main__":
     print(f"{'n':>4} {'peor caso medido':>17} {'ceil(log2(n+1))':>16} {'huecos n+1':>11}")
     for n in range(1, 130):
@@ -54,3 +64,9 @@ if __name__ == "__main__":
     print("\nVariante con lo = m, A = [5], x = 7:",
           "no termina" if variante_lo_igual_m([5], 7) is None else "termina")
     print("Búsqueda binaria correcta, A = [5], x = 7:", busqueda_binaria([5], 7)[0])
+
+    # El Lema 2 con un algoritmo que nunca mira A[5] = 11
+    A = [1, 3, 5, 7, 9, 11, 13]
+    print("\nAlgoritmo que nunca mira A[5] = 11:")
+    for x in (10, 11, 12):
+        print(f"  x = {x}: {busqueda_sin(A, 5, x)}")

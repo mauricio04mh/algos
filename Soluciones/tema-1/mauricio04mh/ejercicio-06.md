@@ -22,7 +22,7 @@ Dificultad: ★★ · Código: [`ejercicio-06.py`](ejercicio-06.py)
 
 $$M[i][j] < M[i][j+1] \quad\text{(filas crecientes)}, \qquad M[i][j] < M[i+1][j] \quad\text{(columnas crecientes)}.$$
 
-**Modelo de comparaciones** (Conferencia 5, §1). El algoritmo solo accede a los datos comparando $x$ con una celda; cada comparación tiene tres respuestas ($<$, $=$, $>$). El costo es el número de comparaciones.
+**Modelo de comparaciones** (Conferencia 5, §1). El algoritmo solo accede a los datos comparando $x$ con una celda; cada comparación tiene tres respuestas ($<$, $=$, $>$). El costo es el número de comparaciones. En el código de la escalera cada comparación se escribe con `==` y `<`, y cuenta como una sola; si se contara cada operador por separado, el número a lo sumo se duplicaría.
 
 **Por qué la cota de información no basta.** La cota de información (Conferencia 5, §3) cuenta respuestas: si el problema tiene $R$ respuestas posibles, el árbol de decisión necesita al menos $R$ hojas, y como cada comparación tiene tres respuestas, un árbol de altura $h$ tiene a lo sumo $3^h$ hojas. Entonces $h \ge \log_3 R$.
 
@@ -78,6 +78,13 @@ return "no está"
 
 Con $i = 4 = n$ no quedan filas y devuelve «no está».
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-06-escalera-oscuro.svg">
+  <img src="figuras/ejercicio-06-escalera-claro.svg" alt="La escalera sobre la matriz del ejemplo, con x = 9 y con x = 15">
+</picture>
+
+**Figura 1.** Las celdas que compara la escalera (recuadradas) y el orden en que las mira, sobre la matriz del ejemplo. Con $x = 9$ hace $4$ comparaciones y lo encuentra en $(2,2)$. Con $x = 15$ hace $5$ y sale por abajo con $i = n$.
+
 ---
 
 ## El invariante (correctitud parcial)
@@ -120,6 +127,13 @@ El caso $x < v$ usa que **las columnas crecen**; el caso $x > v$, que **las fila
 
 **Paso 3.** Si devolvió «está» en $(i,j)$, es porque $x = M[i][j]$: correcto. $\blacksquare$
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-06-escalera-animada-oscuro.gif">
+  <img src="figuras/ejercicio-06-escalera-animada-claro.gif" alt="Animación de la escalera buscando x = 15, con la zona R del invariante sombreada">
+</picture>
+
+**Figura 2.** La búsqueda de $x = 15$ en la matriz del ejemplo, vuelta por vuelta. La zona sombreada es el rectángulo $R$ del invariante. Cada comparación descarta una fila o una columna de $R$ y baja $\Phi$ en $1$, de $8$ a $3$, hasta que $R$ queda vacío.
+
 ---
 
 ## El potencial (terminación y costo)
@@ -144,7 +158,10 @@ el número de filas más el número de columnas que quedan vivas.
 
 **Paso 4.** Al empezar, $\Phi = 2n$. Cuando el ciclo se detiene, una de las dos partes vale $0$ y la otra al menos $1$, así que $\Phi \ge 1$.
 
-**Paso 5.** Entonces $\Phi$ baja a lo sumo $2n - 1$ veces, y cada bajada es una comparación. $\blacksquare$
+**Paso 5.** Cada vuelta hace una comparación. Hay dos formas de terminar:
+
+- **Devuelve «no está».** Cada vuelta bajó $\Phi$ en $1$, de $2n$ a un valor $\ge 1$: hubo a lo sumo $2n - 1$ vueltas.
+- **Devuelve «está».** La última vuelta no baja $\Phi$, pero al empezarla $\Phi \ge 2$ (Paso 2). Las anteriores lo bajaron de $2n$ a un valor $\ge 2$, así que fueron a lo sumo $2n - 2$, y con la última son a lo sumo $2n - 1$. $\blacksquare$
 
 Junto con el Teorema 1, el algoritmo es **totalmente correcto** y hace $O(n)$ comparaciones. Con $n = 4$ son a lo sumo $7$; los dos ejemplos usaron $4$ y $5$.
 
@@ -168,6 +185,13 @@ Ya se probó que $2n-1$ comparaciones bastan. Falta ver que no se puede bajar de
    8   10.6  11   12
   10.8  11   12   13
 ```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-06-adversario-oscuro.svg">
+  <img src="figuras/ejercicio-06-adversario-claro.svg" alt="La matriz M1 con n = 4 y x = 10, con la antidiagonal sombreada y el recorrido de la escalera">
+</picture>
+
+**Figura 3.** La matriz $M_1$ con $n = 4$ y $x = 10$. La antidiagonal (sombreada) separa los valores menores que $x$ de los mayores que $x + 1$. La escalera hace $7 = 2n - 1$ comparaciones y pasa por las $4$ celdas de la antidiagonal, como exige el Teorema 3.
 
 **La matriz $M_1$ en general** (fijado $x$):
 

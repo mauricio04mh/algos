@@ -50,6 +50,12 @@ salida += B[j:]                       # de la otra, sin comparar
 
 **Paso 4.** Se llega a $2n - 1$ cuando las listas se alternan. Con $A = [1,3,5]$ y $B = [2,4,6]$ son $5$ comparaciones. $\blacksquare$
 
+**Demostración de la correctitud.** Invariante: al comenzar cada vuelta, `salida` tiene, en orden creciente, los elementos de $A[0:i]$ y $B[0:j]$, y cada uno de ellos es menor que todos los de $A[i:]$ y $B[j:]$.
+
+- **Inicialización.** Con $i = j = 0$, `salida` está vacía.
+- **Mantenimiento.** Si $A[i] < B[j]$, entonces $A[i]$ es menor que todo $A[i+1:]$ (porque $A$ está ordenada) y que todo $B[j:]$ (porque $B[j]$ es el menor de $B[j:]$): es el menor de lo que queda, y ponerlo al final de `salida` conserva las dos partes del invariante. El otro caso es simétrico.
+- **Conclusión.** Al salir del ciclo una lista está agotada. Lo que queda de la otra está ordenado y es mayor que todo lo que ya salió, así que copiarlo al final da la mezcla ordenada de $A$ y $B$. $\blacksquare$
+
 ---
 
 ## La versión «optimizada» y su costo
@@ -130,6 +136,13 @@ Los dos últimos están al revés: **la salida es incorrecta.**
 | 3 | 1 | 1 | 3 contra 4 | 3 |
 
 Tras la vuelta 3, `i = 2` y a $A$ le queda el $5$. Se copia lo que queda de $B$ ($4$ y $6$) y se pone el $5$ al final: $[1,2,3,4,6,5]$, en vez de $[1,2,3,4,5,6]$. Hizo $3$ comparaciones, menos de las $5$ necesarias. El error es que **nunca comparó el $5$ con el $6$**.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-09-intercalado-oscuro.svg">
+  <img src="figuras/ejercicio-09-intercalado-claro.svg" alt="Pares de vecinos que comparan la mezcla normal y la optimizada sobre la cadena intercalada con n = 3">
+</picture>
+
+**Figura 1.** Los pares de vecinos de la cadena $1 < 2 < \dots < 6$ que compara cada mezcla, con $A = [1,3,5]$ y $B = [2,4,6]$. La normal compara los $5$. La optimizada compara $3$ y deja sin comparar $(b_2, a_3)$ y $(a_3, b_3)$ (en rojo punteado), y por eso pone el $5$ después del $6$.
 
 ### ¿Cuándo acierta?
 

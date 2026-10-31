@@ -57,7 +57,7 @@ Sea $t$ el número de unos consecutivos al final del número: los $t$ bits menos
 
 **Paso 1. Fase 1.** Cambia los $t$ unos por ceros ($t$ pasos) y escribe el $1$ en la posición $-t$ (1 paso): $t + 1$ pasos.
 
-**Paso 2. Fase 2.** Desde la posición $-t$ avanza a la derecha. Atraviesa las celdas $-t+1, \dots, 0$ ($t$ pasos) y lee el blanco de la posición $1$ (1 paso, en el que retrocede): $t + 1$ pasos.
+**Paso 2. Fase 2.** Desde la posición $-t$ avanza a la derecha. Atraviesa las celdas $-t+1, \dots, 0$ ($t$ pasos) y lee el blanco de la posición $1$ (1 paso, en el que retrocede): $t + 1$ pasos. Esa celda está siempre en blanco, porque la máquina nunca escribe a la derecha del LSB.
 
 **Paso 3.** Total: $(t+1) + (t+1) = 2t + 2$. $\blacksquare$
 
@@ -157,6 +157,13 @@ $$\sum_{i=1}^{m} c_i = 4m - 2\,s_2(m).$$
 | 6 | 5 | 1 | 4 | 20 | 20 |
 | 7 | 6 | 0 | 2 | 22 | 22 |
 | 8 | 7 | 3 | 8 | 30 | 30 |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figuras/ejercicio-04-costos-oscuro.svg">
+  <img src="figuras/ejercicio-04-costos-claro.svg" alt="Costo real, potencial y costo amortizado de cada incremento, y el total acumulado">
+</picture>
+
+**Figura 1.** Izquierda: el costo real de los primeros $16$ incrementos (barras) y el potencial después de cada uno. Lo que un incremento caro cuesta por encima de $4$ lo compensa la caída del potencial, y el costo amortizado queda en $4$. Derecha: el total real de $32$ incrementos queda siempre por debajo de $4m$, y en $m = 32$ vale $4 \cdot 32 - 2 = 126$.
 
 **Por qué hace falta empezar desde 0.** El método exige $\Phi_m \ge \Phi_0$. Si el contador empezara con $k$ unos, $\Phi_0 = 2k$ y la cota sería $4m + 2k$.
 
